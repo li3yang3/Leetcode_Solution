@@ -1,0 +1,42 @@
+3. Longest Substring Without Repeating Characters (U)
+
+Given a string, find the length of the longest substring without repeating characters.
+
+Examples:
+
+Given "abcabcbb", the answer is "abc", which the length is 3.
+
+Given "bbbbb", the answer is "b", with the length of 1.
+
+Given "pwwkew", the answer is "wke", with the length of 3. Note that the answer must be a substring, 
+
+"pwke" is a subsequence and not a substring.
+
+解题误区：一开始认为，在无重复的情况下，count一直增加，当遇到重复字符的时候，保存count，并将count置1重新计数，但其实不对，
+应该从重复字符的前一个的hash value + 1处开始重新计数，并和当前位置的index做差，求得当前这段子字符串的长度。将此长度存好，再
+和后续求得的新长度进行比较。
+
+解题思路：在无重复的情况下,当前index i不断增加，在遇到重复值之前将其保存好，当遇到重复值时，从重复字符的前一个的hash value +
+1处开始重新计数存为index j，并和当前位置的index i做差，求得当前这段子字符串的长度。将此长度存好，再和后续求得的新长度进行比较。
+
+知识点：HashMap的定义，注意数据类型的使用
+
+public class Solution {
+    public int lengthOfLongestSubstring(String s) {
+    if(s.length() == 0) {
+        return 0;
+    }
+    int count = 0;
+    int maxcount = 0;
+    HashMap<Character,Integer> hm = new HashMap<Character,Integer>();
+    for( int i = 0; i < s.length(); i++) {
+         if(hm.containsKey(s.charAt(i))) {
+          count = Math.max(count,hm.get(s.charAt(i))+1);
+    }
+    hm.put(s.charAt(i),i);
+    maxcount = Math.max(maxcount,i - count + 1);
+    }
+    return maxcount;
+    }
+}
+

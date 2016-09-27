@@ -1,0 +1,89 @@
+Given a binary tree, return the postorder traversal of its nodes' values.
+
+For example:
+Given binary tree {1,#,2,3},
+   1
+    \
+     2
+    /
+   3
+return [3,2,1].
+
+
+解题思路：1.递归法 : 就是先访问节点的左子树，然后访问右子树，之后才访问输出中间节点。
+2.迭代法: 多设置一个prev节点来记录节点位置，依次从上到下访问左子树，然后从下到上回溯到根节点，再访问右子树，再输出根节点。
+另一个方法是把preorder的输出顺序reverse。
+
+知识点：
+
+递归法：
+public class Solution {
+    List<Integer> traversal = new ArrayList<>();
+    public List<Integer> postorderTraversal(TreeNode root) {
+          postorder(root);   
+          return traversal;
+    }
+    void postorder(TreeNode root){
+        if(root != null){
+        
+        postorder(root.left);
+        postorder(root.right);
+        traversal.add(root.val);
+        }
+    }   
+}
+
+迭代法1：
+public class Solution {
+    public List<Integer> postorderTraversal(TreeNode root) {
+     LinkedList<Integer> list = new LinkedList<Integer>();
+    
+    Stack<TreeNode> stack = new Stack<TreeNode>();
+    TreeNode cur = root;
+    
+    while(cur != null || !stack.empty()) {
+        while(cur != null) {
+            list.addFirst(cur.val);
+            stack.add(cur);
+            cur = cur.right;
+        }
+        cur = stack.pop();
+        cur = cur.left;
+    }
+    return list;   
+    }
+}
+
+迭代法2：
+public ArrayList<Integer> postorderTraversal(TreeNode root) {
+    ArrayList<Integer> result = new ArrayList<Integer>();
+    Stack<TreeNode> stack = new Stack<TreeNode>();
+    TreeNode prev = null; // previously traversed node
+    TreeNode curr = root;
+
+    if (root == null) {
+        return result;
+    }
+
+    stack.push(root);
+    while (!stack.empty()) {
+        curr = stack.peek();
+        if (prev == null || prev.left == curr || prev.right == curr) { // traverse down the tree
+            if (curr.left != null) {
+                stack.push(curr.left);
+            } else if (curr.right != null) {
+                stack.push(curr.right);
+            }
+        } else if (curr.left == prev) { // traverse up the tree from the left
+            if (curr.right != null) {
+                stack.push(curr.right);
+            }
+        } else { // traverse up the tree from the right
+            result.add(curr.val);
+            stack.pop();
+        }
+        prev = curr;
+    }
+
+    return result;
+}
