@@ -3,3 +3,48 @@
 Given two binary trees, write a function to check if they are equal or not.
 
 Two binary trees are considered equal if they are structurally identical and the nodes have the same value.
+
+解题思路：
+
+Recursive:
+
+public class Solution {
+    public boolean isSameTree(TreeNode p, TreeNode q) {
+        return isSameTreeHelp(p,q);
+    }
+    
+    private boolean isSameTreeHelp(TreeNode n1,TreeNode n2) {
+        if(n1 == null || n2 == null) {
+            return n1 == n2;
+        }
+        
+        if(n1.val != n2.val) {
+            return false;
+        }
+        
+        return isSameTreeHelp(n1.left,n2.left) && isSameTreeHelp(n1.right,n2.right);
+    }
+}
+
+Iterative:
+
+public class Solution {
+    public boolean isSameTree(TreeNode p, TreeNode q) {
+        Queue<TreeNode> m = new LinkedList<TreeNode>();
+        if(p == null && q == null) return true;
+        m.add(p);
+        m.add(q);
+        while(m.size() > 1){
+            p = m.poll();                                  //依次输入两两需比较点
+            q = m.poll();
+            if(p == null && q == null) continue;             //均为空则继续比较下两个点
+            if(p == null || q == null) return false;        //其中一个为空则return false
+            if(p.val != q.val) return false;               //值不相等return false
+            m.add(p.left);                                    //按照queue的输出顺利，依次添加相邻需比较点进入queue
+            m.add(q.left);
+            m.add(p.right);
+            m.add(q.right);            
+        }
+        return true;
+    }    
+    }
